@@ -1,17 +1,18 @@
 package vista;
 
 import java.awt.*;
-import java.awt.event.*;
 import modelo.Juguete;
 import modelo.Persona;
 import modelo.Donacion;
 import controlador.ControladorDonacion;
+ // Importa la clase Date de SQL para la conversión
 
 public class FormularioDonacionAWT extends Dialog {
 
     private java.awt.List listaJuguetes, listaPersonas;
     private Button btnDonar, btnCancelar;
     private ControladorDonacion controlador;
+    private static final long serialVersionUID = 1L;
 
     public FormularioDonacionAWT(Frame parent) {
         super(parent, "Registrar Donación", true);
@@ -49,11 +50,15 @@ public class FormularioDonacionAWT extends Dialog {
         int indicePersona = listaPersonas.getSelectedIndex();
 
         if (indiceJuguete >= 0 && indicePersona >= 0) {
+            // Obtener los objetos Persona y Juguete desde el controlador
             Juguete juguete = controlador.obtenerJuguetePorIndice(indiceJuguete);
             Persona persona = controlador.obtenerPersonaPorIndice(indicePersona);
 
-            // Crear la donación
-            Donacion donacion = new Donacion(0, juguete, persona, java.time.LocalDate.now().toString());
+            // Crear la donación pasando los IDs de persona y juguete
+            // Conversión de LocalDate a java.sql.Date
+            java.sql.Date fecha = java.sql.Date.valueOf(java.time.LocalDate.now());
+
+            Donacion donacion = new Donacion(0, juguete.getId(), persona.getId(), fecha, 1, ""); 
             controlador.registrarDonacion(donacion);
             dispose();  // Cerrar el formulario
         } else {

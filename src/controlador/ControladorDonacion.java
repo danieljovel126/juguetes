@@ -17,6 +17,7 @@ public class ControladorDonacion {
     private JugueteDAO jugueteDAO;
     private PersonaDAO personaDAO;
 
+    // Constructor
     public ControladorDonacion(VentanaPrincipalAWT ventana) {
         this.ventana = ventana;
         this.donacionDAO = new DonacionDAO();
@@ -24,29 +25,40 @@ public class ControladorDonacion {
         this.personaDAO = new PersonaDAO();
     }
 
+    // Cargar los juguetes en la ventana
     public void cargarJuguetes() {
-        List<Juguete> juguetes = jugueteDAO.obtenerJuguetes();
+        List<Juguete> juguetes = jugueteDAO.obtenerJuguetes();  // Obtener todos los juguetes de la base de datos
         for (Juguete juguete : juguetes) {
-            ventana.agregarJugueteALaLista(juguete);  // Cargar juguetes en la lista
+            ventana.agregarJugueteALaLista(juguete);  // Pasar el juguete a la lista en la interfaz
         }
     }
 
+    // Cargar las personas en la ventana
     public void cargarPersonas() {
-        List<Persona> personas = personaDAO.obtenerPersonas();
+        List<Persona> personas = personaDAO.obtenerPersonas();  // Obtener todas las personas de la base de datos
         for (Persona persona : personas) {
-            ventana.agregarPersonaALaLista(persona);  // Cargar personas en la lista
+            ventana.agregarPersonaALaLista(persona);  // Pasar la persona a la lista en la interfaz
         }
     }
 
+    // Obtener un juguete por su índice
     public Juguete obtenerJuguetePorIndice(int index) {
-        return jugueteDAO.obtenerJuguetes().get(index);  // Obtener juguete por índice
+        return jugueteDAO.obtenerJuguetes().get(index);  // Obtener el juguete en el índice especificado
     }
 
+    // Obtener una persona por su índice
     public Persona obtenerPersonaPorIndice(int index) {
-        return personaDAO.obtenerPersonas().get(index);  // Obtener persona por índice
+        return personaDAO.obtenerPersonas().get(index);  // Obtener la persona en el índice especificado
     }
 
+    // Registrar una nueva donación en la base de datos
     public void registrarDonacion(Donacion donacion) {
-        donacionDAO.agregarDonacion(donacion);
+        donacionDAO.agregarDonacion(donacion);  // Llamar al DAO para registrar la donación
+    }
+    
+ // Método en ControladorDonacion para cargar las donaciones
+    public void cargarDonaciones() {
+        List<Donacion> donaciones = donacionDAO.obtenerDonaciones();  // Obtener todas las donaciones de la base de datos
+        ventana.cargarDonaciones(donaciones);  // Pasar la lista de donaciones a la ventana para que se muestren
     }
 }
