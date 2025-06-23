@@ -71,4 +71,5 @@ public class PersonaDAO {
             System.out.println("Error al eliminar la persona: " + e.getMessage());
         }
     }
+
 }
