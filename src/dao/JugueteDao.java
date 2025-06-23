@@ -28,8 +28,8 @@ public class JugueteDAO {
                     rs.getString("nombre"), 
                     rs.getString("tipo"), 
                     rs.getString("estado"),  // Cambié a String para el estado
-                    rs.getString("descripcion"), 
-                    rs.getString("propietario")  // Propietario como String
+                    rs.getString("descripcion") == null ? "" : rs.getString("descripcion"), // Manejo de posibles nulls
+                    rs.getString("propietario") == null ? "" : rs.getString("propietario")  // Manejo de posibles nulls
                 );
                 juguetes.add(juguete);  // Añadir el juguete a la lista
             }
@@ -109,8 +109,8 @@ public class JugueteDAO {
                         rs.getString("nombre"),
                         rs.getString("tipo"),
                         rs.getString("estado"),  // Estado como String
-                        rs.getString("descripcion"),
-                        rs.getString("propietario")  // Propietario como String
+                        rs.getString("descripcion") == null ? "" : rs.getString("descripcion"),
+                        rs.getString("propietario") == null ? "" : rs.getString("propietario")
                     );
                     return juguete;  // Devolver el juguete encontrado
                 }
