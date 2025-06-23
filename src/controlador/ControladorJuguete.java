@@ -17,8 +17,8 @@ public class ControladorJuguete {
     }
 
     public void cargarJuguetes() {
-        List<Juguete> juguetes = jugueteDAO.obtenerJuguetes();
-        ventana.cargarJuguetes(juguetes);
+        List<Juguete> juguetes = jugueteDAO.obtenerJuguetes();  // Obtener todos los juguetes desde la base de datos
+        ventana.cargarJuguetes(juguetes);  // Pasar los juguetes a la vista
     }
 
     public void agregarJuguete(Juguete juguete) {
@@ -27,7 +27,7 @@ public class ControladorJuguete {
     }
 
     public void editarJuguete(Juguete juguete) {
-        jugueteDAO.agregarJuguete(juguete);  // Reutilizamos agregar para la edición
+        jugueteDAO.agregarJuguete(juguete);  // Para la edición, reutilizamos agregar
         cargarJuguetes();
     }
 
@@ -36,8 +36,8 @@ public class ControladorJuguete {
         cargarJuguetes();
     }
 
+    // **Este método debe estar aquí en ControladorJuguete.java**
     public Juguete obtenerJuguetePorIndice(int index) {
-        // Recupera el juguete desde la lista cargada (en un entorno real esto debería ser más robusto)
-        return jugueteDAO.obtenerJuguetes().get(index);
+        return jugueteDAO.obtenerJuguetes().get(index);  // Devuelve el juguete en el índice especificado
     }
 }

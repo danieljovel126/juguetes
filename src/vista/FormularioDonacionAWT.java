@@ -1,7 +1,6 @@
 package vista;
 
 import java.awt.*;
-import java.awt.event.*;
 import modelo.Juguete;
 import modelo.Persona;
 import modelo.Donacion;
@@ -12,6 +11,8 @@ public class FormularioDonacionAWT extends Dialog {
     private java.awt.List listaJuguetes, listaPersonas;
     private Button btnDonar, btnCancelar;
     private ControladorDonacion controlador;
+
+    private static final long serialVersionUID = 1L;  // Agregar esta línea en todas las clases serializables
 
     public FormularioDonacionAWT(Frame parent) {
         super(parent, "Registrar Donación", true);
@@ -33,6 +34,7 @@ public class FormularioDonacionAWT extends Dialog {
         btnDonar.addActionListener(e -> donarJuguete());
         btnCancelar.addActionListener(e -> dispose());
 
+        // Agregar los componentes a la interfaz
         add(new Label("Selecciona un Juguete"));
         add(listaJuguetes);
         add(new Label("Selecciona una Persona"));
@@ -44,13 +46,14 @@ public class FormularioDonacionAWT extends Dialog {
         add(panelBotones);
     }
 
+    // Método para realizar la donación
     private void donarJuguete() {
         int indiceJuguete = listaJuguetes.getSelectedIndex();
         int indicePersona = listaPersonas.getSelectedIndex();
 
         if (indiceJuguete >= 0 && indicePersona >= 0) {
-            Juguete juguete = controlador.obtenerJuguetePorIndice(indiceJuguete);
-            Persona persona = controlador.obtenerPersonaPorIndice(indicePersona);
+            Juguete juguete = controlador.obtenerJuguetePorIndice(indiceJuguete);  // Obtener el juguete desde ControladorDonacion
+            Persona persona = controlador.obtenerPersonaPorIndice(indicePersona);  // Aquí es donde necesitas usar ControladorPersona
 
             // Crear la donación
             Donacion donacion = new Donacion(0, juguete, persona, java.time.LocalDate.now().toString());
@@ -61,6 +64,7 @@ public class FormularioDonacionAWT extends Dialog {
         }
     }
 
+    // Mostrar mensaje de advertencia si no se seleccionan ambos elementos
     private void mostrarMensaje(String mensaje) {
         Dialog dialogo = new Dialog(this, "Aviso", true);
         dialogo.setLayout(new FlowLayout());
@@ -73,3 +77,4 @@ public class FormularioDonacionAWT extends Dialog {
         dialogo.setVisible(true);
     }
 }
+

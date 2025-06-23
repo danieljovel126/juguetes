@@ -8,6 +8,7 @@ import java.util.List;
 
 public class PersonaDAO {
 
+    // Método para agregar una persona
     public void agregarPersona(Persona persona) {
         String sql = "INSERT INTO personas (nombre, edad, direccion, telefono, correo) VALUES (?, ?, ?, ?, ?)";
 
@@ -28,6 +29,7 @@ public class PersonaDAO {
         }
     }
 
+    // Método para obtener todas las personas
     public List<Persona> obtenerPersonas() {
         List<Persona> personas = new ArrayList<>();
         String sql = "SELECT * FROM personas";
@@ -52,5 +54,21 @@ public class PersonaDAO {
             System.out.println("Error al obtener las personas: " + e.getMessage());
         }
         return personas;
+    }
+
+    // Método para eliminar una persona por su ID
+    public void eliminarPersona(int id) {
+        String sql = "DELETE FROM personas WHERE id = ?";
+
+        try (Connection con = Conexion.obtenerConexion();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);  // Establecer el parámetro de ID
+            stmt.executeUpdate();  // Ejecutar la eliminación
+            System.out.println("Persona eliminada exitosamente");
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar la persona: " + e.getMessage());
+        }
     }
 }

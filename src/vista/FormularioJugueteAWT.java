@@ -1,7 +1,6 @@
 package vista;
 
 import java.awt.*;
-import java.awt.event.*;
 import modelo.Juguete;
 import controlador.ControladorJuguete;
 
@@ -11,6 +10,8 @@ public class FormularioJugueteAWT extends Dialog {
     private Button btnGuardar, btnCancelar;
     private ControladorJuguete controlador;
     private Juguete juguete;
+
+    private static final long serialVersionUID = 1L;
 
     public FormularioJugueteAWT(Frame parent, Juguete juguete) {
         super(parent, juguete == null ? "Agregar Juguete" : "Editar Juguete", true);
@@ -49,12 +50,13 @@ public class FormularioJugueteAWT extends Dialog {
         add(panelBotones);
     }
 
+    // Método para guardar el juguete en la base de datos
     private void guardarJuguete() {
         if (juguete == null) {
             // Si es un nuevo juguete
             juguete = new Juguete(0, txtNombre.getText(), txtCategoria.getText(), txtEstado.getText(),
                     txtUbicacion.getText(), txtPropietario.getText());
-            controlador.agregarJuguete(juguete);
+            controlador.agregarJuguete(juguete);  // Llamar al controlador para agregar el juguete
         } else {
             // Si estamos editando
             juguete.setNombre(txtNombre.getText());
@@ -62,7 +64,7 @@ public class FormularioJugueteAWT extends Dialog {
             juguete.setEstado(txtEstado.getText());
             juguete.setUbicacion(txtUbicacion.getText());
             juguete.setPropietario(txtPropietario.getText());
-            controlador.editarJuguete(juguete);
+            controlador.editarJuguete(juguete);  // Llamar al controlador para editar el juguete
         }
         dispose();  // Cerrar formulario
     }

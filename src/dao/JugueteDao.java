@@ -8,6 +8,7 @@ import java.util.List;
 
 public class JugueteDAO {
 
+    // Método para agregar un juguete
     public void agregarJuguete(Juguete juguete) {
         String sql = "INSERT INTO juguetes (nombre, categoria, estado, ubicacion, propietario) VALUES (?, ?, ?, ?, ?)";
 
@@ -28,15 +29,17 @@ public class JugueteDAO {
         }
     }
 
+    // Método para obtener todos los juguetes desde la base de datos
     public List<Juguete> obtenerJuguetes() {
         List<Juguete> juguetes = new ArrayList<>();
-        String sql = "SELECT * FROM juguetes";
+        String sql = "SELECT * FROM juguetes";  // Consulta para obtener todos los juguetes
 
         try (Connection con = Conexion.obtenerConexion();
              PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                // Crear un nuevo objeto Juguete con los datos de la base de datos
                 Juguete juguete = new Juguete(
                         rs.getInt("id"),
                         rs.getString("nombre"),
@@ -45,15 +48,16 @@ public class JugueteDAO {
                         rs.getString("ubicacion"),
                         rs.getString("propietario")
                 );
-                juguetes.add(juguete);
+                juguetes.add(juguete);  // Agregar el juguete a la lista
             }
 
         } catch (SQLException e) {
             System.out.println("Error al obtener los juguetes: " + e.getMessage());
         }
-        return juguetes;
+        return juguetes;  // Retornar la lista de juguetes
     }
 
+    // Método para eliminar un juguete de la base de datos
     public void eliminarJuguete(int id) {
         String sql = "DELETE FROM juguetes WHERE id = ?";
 

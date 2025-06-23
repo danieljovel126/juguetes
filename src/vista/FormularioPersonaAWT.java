@@ -1,7 +1,6 @@
 package vista;
 
 import java.awt.*;
-import java.awt.event.*;
 import modelo.Persona;
 import controlador.ControladorPersona;
 
@@ -11,6 +10,8 @@ public class FormularioPersonaAWT extends Dialog {
     private Button btnGuardar, btnCancelar;
     private ControladorPersona controlador;
     private Persona persona;
+
+    private static final long serialVersionUID = 1L;
 
     public FormularioPersonaAWT(Frame parent, Persona persona) {
         super(parent, persona == null ? "Agregar Persona" : "Editar Persona", true);
@@ -49,12 +50,13 @@ public class FormularioPersonaAWT extends Dialog {
         add(panelBotones);
     }
 
+    // Método para guardar la persona en la base de datos
     private void guardarPersona() {
         if (persona == null) {
             // Si es una nueva persona
             persona = new Persona(0, txtNombre.getText(), Integer.parseInt(txtEdad.getText()), txtDireccion.getText(),
                     txtTelefono.getText(), txtCorreo.getText());
-            controlador.agregarPersona(persona);
+            controlador.agregarPersona(persona);  // Llamar al controlador para agregar la persona
         } else {
             // Si estamos editando
             persona.setNombre(txtNombre.getText());
@@ -62,8 +64,8 @@ public class FormularioPersonaAWT extends Dialog {
             persona.setDireccion(txtDireccion.getText());
             persona.setTelefono(txtTelefono.getText());
             persona.setCorreo(txtCorreo.getText());
-            controlador.editarPersona(persona);
+            controlador.editarPersona(persona);  // Llamar al controlador para editar la persona
         }
-        dispose();  // Cerrar formulario
+        dispose();  // Cerrar el formulario
     }
 }
