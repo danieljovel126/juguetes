@@ -1,75 +1,124 @@
 package dao;
 
 import modelo.Juguete;
-import conexion.Conexion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JugueteDAO {
 
-    // Método para agregar un juguete
-    public void agregarJuguete(Juguete juguete) {
-        String sql = "INSERT INTO juguetes (nombre, categoria, estado, ubicacion, propietario) VALUES (?, ?, ?, ?, ?)";
-
-        try (Connection con = Conexion.obtenerConexion();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-
-            stmt.setString(1, juguete.getNombre());
-            stmt.setString(2, juguete.getCategoria());
-            stmt.setString(3, juguete.getEstado());
-            stmt.setString(4, juguete.getUbicacion());
-            stmt.setString(5, juguete.getPropietario());
-
-            stmt.executeUpdate();
-            System.out.println("Juguete agregado exitosamente");
-
-        } catch (SQLException e) {
-            System.out.println("Error al agregar el juguete: " + e.getMessage());
-        }
+    // Método para obtener la conexión con la base de datos
+    private Connection getConnection() throws SQLException {
+        // Conexión a MySQL
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/jugueteria", "root", "");  // Cambia según tus credenciales
     }
 
-    // Método para obtener todos los juguetes desde la base de datos
+    // Obtener todos los juguetes
     public List<Juguete> obtenerJuguetes() {
         List<Juguete> juguetes = new ArrayList<>();
-        String sql = "SELECT * FROM juguetes";  // Consulta para obtener todos los juguetes
+        String sql = "SELECT * FROM juguetes";  // Consulta SQL para obtener todos los juguetes
 
-        try (Connection con = Conexion.obtenerConexion();
-             PreparedStatement stmt = con.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                // Crear un nuevo objeto Juguete con los datos de la base de datos
                 Juguete juguete = new Juguete(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("categoria"),
-                        rs.getString("estado"),
-                        rs.getString("ubicacion"),
-                        rs.getString("propietario")
+                    rs.getInt("id"), 
+                    rs.getString("nombre"), 
+                    rs.getString("tipo"), 
+                    rs.getString("estado"),  // Cambié a String para el estado
+                    rs.getString("descripcion"), 
+                    rs.getString("propietario")  // Propietario como String
                 );
-                juguetes.add(juguete);  // Agregar el juguete a la lista
+                juguetes.add(juguete);  // Añadir el juguete a la lista
             }
-
         } catch (SQLException e) {
-            System.out.println("Error al obtener los juguetes: " + e.getMessage());
+            System.err.println("Error al obtener juguetes: " + e.getMessage());
         }
-        return juguetes;  // Retornar la lista de juguetes
+
+        return juguetes;
     }
 
-    // Método para eliminar un juguete de la base de datos
+    // Agregar un nuevo juguete
+    public void agregarJuguete(Juguete juguete) {
+        String sql = "INSERT INTO juguetes (nombre, tipo, estado, descripcion, propietario) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, juguete.getNombre());
+            pstmt.setString(2, juguete.getTipo());
+            pstmt.setString(3, juguete.getEstado());  // Estado como String
+            pstmt.setString(4, juguete.getDescripcion());
+            pstmt.setString(5, juguete.getPropietario());  // Propietario como String
+            pstmt.executeUpdate();  // Ejecutar la actualización en la base de datos
+
+        } catch (SQLException e) {
+            System.err.println("Error al agregar juguete: " + e.getMessage());
+        }
+    }
+
+    // Actualizar un juguete
+    public void actualizarJuguete(Juguete juguete) {
+        String sql = "UPDATE juguetes SET nombre = ?, tipo = ?, estado = ?, descripcion = ?, propietario = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, juguete.getNombre());
+            pstmt.setString(2, juguete.getTipo());
+            pstmt.setString(3, juguete.getEstado());  // Estado como String
+            pstmt.setString(4, juguete.getDescripcion());
+            pstmt.setString(5, juguete.getPropietario());  // Propietario como String
+            pstmt.setInt(6, juguete.getId());
+            pstmt.executeUpdate();  // Ejecutar la actualización en la base de datos
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar juguete: " + e.getMessage());
+        }
+    }
+
+    // Eliminar un juguete
     public void eliminarJuguete(int id) {
         String sql = "DELETE FROM juguetes WHERE id = ?";
 
-        try (Connection con = Conexion.obtenerConexion();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-            System.out.println("Juguete eliminado exitosamente");
+            pstmt.setInt(1, id);  // Establecer el id del juguete a eliminar
+            pstmt.executeUpdate();  // Ejecutar la eliminación en la base de datos
 
         } catch (SQLException e) {
-            System.out.println("Error al eliminar el juguete: " + e.getMessage());
+            System.err.println("Error al eliminar juguete: " + e.getMessage());
         }
+    }
+
+    // Obtener un juguete por ID
+    public Juguete obtenerJuguetePorId(int id) {
+        String sql = "SELECT * FROM juguetes WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);  // Establecer el id del juguete
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Juguete juguete = new Juguete(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("tipo"),
+                        rs.getString("estado"),  // Estado como String
+                        rs.getString("descripcion"),
+                        rs.getString("propietario")  // Propietario como String
+                    );
+                    return juguete;  // Devolver el juguete encontrado
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener juguete por ID: " + e.getMessage());
+        }
+
+        return null;  // Retornar null si no se encuentra el juguete
     }
 }

@@ -3,6 +3,7 @@ package vista;
 import java.awt.*;
 import modelo.Persona;
 import controlador.ControladorPersona;
+import javax.swing.JOptionPane;
 
 public class FormularioPersonaAWT extends Dialog {
 
@@ -10,7 +11,6 @@ public class FormularioPersonaAWT extends Dialog {
     private Button btnGuardar, btnCancelar;
     private ControladorPersona controlador;
     private Persona persona;
-
     private static final long serialVersionUID = 1L;
 
     public FormularioPersonaAWT(Frame parent, Persona persona) {
@@ -21,18 +21,22 @@ public class FormularioPersonaAWT extends Dialog {
         setSize(400, 300);
         setLayout(new GridLayout(6, 2));
 
+        // Inicialización de los campos de texto (usando los valores existentes si estamos editando)
         txtNombre = new TextField(persona != null ? persona.getNombre() : "");
-        txtEdad = new TextField(persona != null ? String.valueOf(persona.getEdad()) : "");
+        txtEdad = new TextField(persona != null ? String.valueOf(persona.getEdad()) : "");  // Añadimos el campo Edad
         txtDireccion = new TextField(persona != null ? persona.getDireccion() : "");
         txtTelefono = new TextField(persona != null ? persona.getTelefono() : "");
-        txtCorreo = new TextField(persona != null ? persona.getCorreo() : "");
+        txtCorreo = new TextField(persona != null ? persona.getEmail() : "");
 
+        // Botones para guardar o cancelar
         btnGuardar = new Button("Guardar");
         btnCancelar = new Button("Cancelar");
 
+        // Acciones de los botones
         btnGuardar.addActionListener(e -> guardarPersona());
         btnCancelar.addActionListener(e -> dispose());
 
+        // Añadir los componentes de la interfaz
         add(new Label("Nombre"));
         add(txtNombre);
         add(new Label("Edad"));
@@ -52,20 +56,34 @@ public class FormularioPersonaAWT extends Dialog {
 
     // Método para guardar la persona en la base de datos
     private void guardarPersona() {
-        if (persona == null) {
-            // Si es una nueva persona
-            persona = new Persona(0, txtNombre.getText(), Integer.parseInt(txtEdad.getText()), txtDireccion.getText(),
-                    txtTelefono.getText(), txtCorreo.getText());
-            controlador.agregarPersona(persona);  // Llamar al controlador para agregar la persona
-        } else {
-            // Si estamos editando
-            persona.setNombre(txtNombre.getText());
-            persona.setEdad(Integer.parseInt(txtEdad.getText()));
-            persona.setDireccion(txtDireccion.getText());
-            persona.setTelefono(txtTelefono.getText());
-            persona.setCorreo(txtCorreo.getText());
-            controlador.editarPersona(persona);  // Llamar al controlador para editar la persona
+        // Verificación para asegurarse de que los campos obligatorios están completos
+        if (txtNombre.getText().isEmpty() || txtEdad.getText().isEmpty() || txtDireccion.getText().isEmpty() ||
+            txtTelefono.getText().isEmpty() || txtCorreo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;  // Salir si algún campo obligatorio está vacío
         }
-        dispose();  // Cerrar el formulario
+
+        try {
+            // Intentar convertir la edad a número
+            int edad = Integer.parseInt(txtEdad.getText());  // Conversión de texto a número
+
+            // Si es una nueva persona
+            if (persona == null) {
+                // Asegúrate de que el apellido esté vacío si no es necesario
+                persona = new Persona(0, txtNombre.getText(), "", txtCorreo.getText(), txtTelefono.getText(), txtDireccion.getText(), edad);
+                controlador.agregarPersona(persona);
+            } else {
+                // Si estamos editando, actualiza la persona
+                persona.setNombre(txtNombre.getText());
+                persona.setEdad(edad);  // Conversión de texto a número
+                persona.setDireccion(txtDireccion.getText());
+                persona.setTelefono(txtTelefono.getText());
+                persona.setEmail(txtCorreo.getText());
+                controlador.editarPersona(persona);
+            }
+            dispose();  // Cerrar formulario
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "La edad debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

@@ -5,6 +5,7 @@ import modelo.Juguete;
 import modelo.Persona;
 import modelo.Donacion;
 import controlador.ControladorDonacion;
+// Importa la clase Date de SQL para la conversión
 
 public class FormularioDonacionAWT extends Dialog {
 
@@ -52,11 +53,15 @@ public class FormularioDonacionAWT extends Dialog {
         int indicePersona = listaPersonas.getSelectedIndex();
 
         if (indiceJuguete >= 0 && indicePersona >= 0) {
-            Juguete juguete = controlador.obtenerJuguetePorIndice(indiceJuguete);  // Obtener el juguete desde ControladorDonacion
-            Persona persona = controlador.obtenerPersonaPorIndice(indicePersona);  // Aquí es donde necesitas usar ControladorPersona
+            // Obtener los objetos Persona y Juguete desde el controlador
+            Juguete juguete = controlador.obtenerJuguetePorIndice(indiceJuguete);
+            Persona persona = controlador.obtenerPersonaPorIndice(indicePersona);
 
-            // Crear la donación
-            Donacion donacion = new Donacion(0, juguete, persona, java.time.LocalDate.now().toString());
+            // Crear la donación pasando los IDs de persona y juguete
+            // Conversión de LocalDate a java.sql.Date
+            java.sql.Date fecha = java.sql.Date.valueOf(java.time.LocalDate.now());
+
+            Donacion donacion = new Donacion(0, juguete.getId(), persona.getId(), fecha, 1, ""); 
             controlador.registrarDonacion(donacion);
             dispose();  // Cerrar el formulario
         } else {
@@ -77,4 +82,3 @@ public class FormularioDonacionAWT extends Dialog {
         dialogo.setVisible(true);
     }
 }
-
